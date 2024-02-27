@@ -1,17 +1,56 @@
-﻿using Microsoft.CognitiveServices.Speech;
+﻿using Azure.Storage.Blobs;
+using Microsoft.CognitiveServices.Speech;
+using Microsoft.CognitiveServices.Speech.Audio;
 
-
- static class Program
+static class Program
 {
-    const string SubscriptionKey = "YOUR_KEY_HERE";
-    const string Region = "YOUR_REGION_HERE";
+ 
+    static async Task UploadAudioToBlobStorage(AudioDataStream audioStream)
+    {
+        var blobServiceClient = new BlobServiceClient(BlobConnectionString);
+        var blobContainerClient = blobServiceClient.GetBlobContainerClient(BlobContainerName);
+        
+        await blobContainerClient.CreateIfNotExistsAsync();
+        
+        var blobName = $"{Guid.NewGuid()}.wav";
+        var blobClient = blobContainerClient.GetBlobClient(blobName);
 
+        using (MemoryStream memoryStream = new MemoryStream())
+        {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = (int)audioStream.ReadData(buffer)) > 0)
+            {
+                memoryStream.Write(buffer, 0, bytesRead);
+            }
+            memoryStream.Seek(0, SeekOrigin.Begin);
+
+            await blobClient.UploadAsync(memoryStream, true);
+        }
+
+        Console.WriteLine($"Audio uploaded to Blob Storage. Blob URI: {blobClient.Uri}");
+    }
+
+    static async void SaveSpeechSynthesisResult(SpeechSynthesisResult speechSynthesisResult, string text)
+    {
+        var guidName = Guid.NewGuid().ToString();
+        var pathForFileToSave = Path.Combine(_desktopPath, $"{guidName}.wav");
+        if (speechSynthesisResult.Reason == ResultReason.SynthesizingAudioCompleted)
+        {
+                var audioStream = AudioDataStream.FromResult(speechSynthesisResult);
+                await UploadAudioToBlobStorage(audioStream);
+                await audioStream.SaveToWaveFileAsync(pathForFileToSave);
+                Console.WriteLine($"Audio saved successfully!");
+        }
+    }
+    
     static void OutputSpeechSynthesisResult(SpeechSynthesisResult speechSynthesisResult, string text)
     {
         switch (speechSynthesisResult.Reason)
         {
             case ResultReason.SynthesizingAudioCompleted:
-                Console.WriteLine($"Speech synthesized for text : {text}");
+                Console.WriteLine($"Speech synthesized for text: {text}");
+                Console.WriteLine($"Reason type: {speechSynthesisResult.Reason.GetType()}");
                 break;
             case ResultReason.Canceled:
                 var cancellation = SpeechSynthesisCancellationDetails.FromResult(speechSynthesisResult);
@@ -21,28 +60,36 @@
                 {
                     Console.WriteLine($"CANCELED: ErrorCode={cancellation.ErrorCode}");
                     Console.WriteLine($"CANCELED: ErrorDetails=[{cancellation.ErrorDetails}]");
-                    Console.WriteLine($"CANCELED: Did you set the speech resource key and region values?");
+                    Console.WriteLine("CANCELED: Did you set the speech resource key and region values?");
                 }
-
                 break;
         }
     }
 
-    async static Task Main(string[] args)
+    static async Task Main(string[] args)
     {
         var speechConfig = SpeechConfig.FromSubscription(subscriptionKey: SubscriptionKey, region: Region);
-        speechConfig.SpeechSynthesisVoiceName = "en-US-GuyNeural";
+        speechConfig.SpeechSynthesisVoiceName = "en-US-NancyNeural";
 
         using (var speechSynthesizer = new SpeechSynthesizer(speechConfig))
         {
-            Console.WriteLine("Enter text");
+            Console.WriteLine("Enter text:");
             var userText = Console.ReadLine();
 
             var speechResult = await speechSynthesizer.SpeakTextAsync(text: userText);
-            OutputSpeechSynthesisResult(speechResult, text: userText);
+            
+            OutputSpeechSynthesisResult(speechResult, userText);
+            SaveSpeechSynthesisResult(speechResult, userText);
+            
+            var duration = speechResult.AudioDuration;
+            Console.WriteLine($"Audio duration: {duration}");
         }
-        
+
         Console.WriteLine("Press any key to continue...");
         Console.ReadKey();
     }
+
+    
+
+
 }
