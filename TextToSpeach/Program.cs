@@ -1,7 +1,7 @@
 ﻿using Microsoft.CognitiveServices.Speech;
 
 
-static class Program
+ static class Program
 {
     const string SubscriptionKey = "YOUR_KEY_HERE";
     const string Region = "YOUR_REGION_HERE";
