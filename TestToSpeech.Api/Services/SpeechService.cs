@@ -1,5 +1,4 @@
 using Microsoft.CognitiveServices.Speech;
-using TestToSpeech.Api.Models;
 
 namespace TestToSpeech.Api.Services;
 
@@ -9,7 +8,6 @@ public class SpeechService: ISpeechService
     private readonly string Region = "YOUR_REGION";
     private const string SpeechVoice = "en-US-NancyNeural";
     private static string DesktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
 
     private readonly IWebHostEnvironment webHostEnvironment;
     private readonly string wwwRootPath;
@@ -29,16 +27,19 @@ public class SpeechService: ISpeechService
             region: this.Region);
 
         speechConfig.SpeechSynthesisVoiceName = SpeechVoice;
-
-        using (var speechSynthesizer = new SpeechSynthesizer(speechConfig))
+        // Change to speech voice 
+        using (var speechSynthesizer = new SpeechSynthesizer(speechConfig, null))
         {
             var speechResult = await speechSynthesizer.SpeakTextAsync(text: text);
             OutputSpeechSynthesisResult(speechResult, text);
-            SaveSpeechSynthesisResultToLocalDirectory(speechResult, text);
+            
             try
             {
-                var filePath = Path.Combine(this.wwwRootPath, $"{FileNameIdDateTime()}.wov");
-                await File.WriteAllBytesAsync(filePath, speechResult.AudioData);
+                var filePath = Path.Combine(this.wwwRootPath, $"{FileNameIdDateTime()}.wav");
+               
+                SaveSpeechSynthesisResultToLocalDirectory(
+                    speechSynthesisResult: speechResult,
+                    filePath: filePath);
             }
             catch (Exception e)
             {
@@ -56,7 +57,6 @@ public class SpeechService: ISpeechService
         {
             case ResultReason.SynthesizingAudioCompleted:
                 Console.WriteLine($"Speech synthesized for text: {text}");
-                Console.WriteLine($"Reason type: {speechSynthesisResult.Reason.GetType()}");
                 break;
             case ResultReason.Canceled:
                 var cancellation = SpeechSynthesisCancellationDetails.FromResult(speechSynthesisResult);
@@ -72,16 +72,15 @@ public class SpeechService: ISpeechService
         } 
     }
 
-    private static async void SaveSpeechSynthesisResultToLocalDirectory(SpeechSynthesisResult speechSynthesisResult, string text)
+    private static async void SaveSpeechSynthesisResultToLocalDirectory(
+        SpeechSynthesisResult speechSynthesisResult, 
+        string filePath)
     {
-        
-        var guidName = Guid.NewGuid().ToString();
-        var pathForFileToSave = Path.Combine(DesktopPath, $"{guidName}.wav");
         if (speechSynthesisResult.Reason == ResultReason.SynthesizingAudioCompleted)
         {
             var audioStream = AudioDataStream.FromResult(speechSynthesisResult);
-            await audioStream.SaveToWaveFileAsync(pathForFileToSave);
-            Console.WriteLine($"Audio saved successfully!");
+            await audioStream.SaveToWaveFileAsync(filePath);
+            Console.WriteLine($"Audio saved successfully to {filePath}");
         }
     }
 
