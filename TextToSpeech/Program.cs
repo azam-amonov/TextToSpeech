@@ -3,11 +3,7 @@ using Microsoft.CognitiveServices.Speech;
 
 static class Program
 {
-    const string SubscriptionKey = "c471224359ce494499635bc6a10ffd58";
-    const string Region = "eastus";
-    private static string _desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-    const string BlobConnectionString = "DefaultEndpointsProtocol=https;AccountName=betarteebblob;AccountKey=SmrTfiJH9P8bHVZvjCSUm7uk776hlO7gY/uJzj0E4i3lmy3DwwwwGftHBNUXGJpFPOceUTALRsmg+AStOu9Jrg==;EndpointSuffix=core.windows.net";
-    const string BlobContainerName = "audio";
+    
     static async Task UploadAudioToBlobStorage(AudioDataStream audioStream)
     {
         var blobServiceClient = new BlobServiceClient(BlobConnectionString);
