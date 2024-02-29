@@ -5,8 +5,8 @@ namespace TestToSpeech.Api.Services;
 
 public class SpeechService: ISpeechService
 {
-    private readonly string SubscriptionKey ="_subscription";
-    private readonly string Region = "_region";
+    private readonly string SubscriptionKey = "c471224359ce494499635bc6a10ffd58";
+    private readonly string Region = "eastus";
     private const string SpeechVoice = "en-AU-TinaNeural";
     private static string DesktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
@@ -28,7 +28,8 @@ public class SpeechService: ISpeechService
         timer.Start();
         var speechConfig = SpeechConfig.FromSubscription(
             subscriptionKey: this.SubscriptionKey,
-            region: this.Region);
+            region: this.Region
+            );
 
         speechConfig.SpeechSynthesisVoiceName = SpeechVoice;
         // Change to speech voice 
