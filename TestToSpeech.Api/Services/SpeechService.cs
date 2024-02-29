@@ -7,7 +7,14 @@ public class SpeechService: ISpeechService
 {
     private readonly string SubscriptionKey = "c471224359ce494499635bc6a10ffd58";
     private readonly string Region = "eastus";
-    private const string SpeechVoice = "en-AU-TinaNeural";
+
+    private const string SpeechVoice = "en-IN-RaviNeural";
+        // "en-US-ZiraNeural"; 7/10
+        // "en-US-JennyNeural"; 7/10
+        // "zh-CN-XiaoxiaoNeural"; 4/10 (for joke 8/10)
+        // "en-IN-NeerjaNeural"; 4/10 for joke
+        //"en-US-AriaNeural"; 8/10
+        //"en-AU-TinaNeural"; 7/10
     private static string DesktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
     private readonly IWebHostEnvironment webHostEnvironment;
