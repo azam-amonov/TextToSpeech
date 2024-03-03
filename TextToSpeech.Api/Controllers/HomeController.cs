@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace TestToSpeech.Api.Controllers;
+namespace TextToSpeech.Api.Controllers;
 
 [ApiController]
 [Route("/api/[controller]")]

@@ -1,4 +1,4 @@
-namespace TestToSpeech.Api.Models;
+namespace TextToSpeech.Api.Models;
 
 public class Subscription
 {

@@ -1,4 +1,4 @@
-using TestToSpeech.Api.Services;
+using TextToSpeech.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,6 +1,6 @@
 using Microsoft.CognitiveServices.Speech;
 
-namespace TestToSpeech.Api.Services;
+namespace TextToSpeech.Api.Services;
 
 public interface ISpeechService
 {
