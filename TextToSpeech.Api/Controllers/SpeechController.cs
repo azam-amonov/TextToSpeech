@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using TestToSpeech.Api.Models;
-using TestToSpeech.Api.Services;
+using TextToSpeech.Api.Models;
+using TextToSpeech.Api.Services;
 
-namespace TestToSpeech.Api.Controllers;
+namespace TextToSpeech.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

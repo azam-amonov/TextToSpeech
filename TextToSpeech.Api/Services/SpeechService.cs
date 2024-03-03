@@ -1,12 +1,12 @@
 using System.Diagnostics;
 using Microsoft.CognitiveServices.Speech;
 
-namespace TestToSpeech.Api.Services;
+namespace TextToSpeech.Api.Services;
 
 public class SpeechService: ISpeechService
 {
-    private readonly string SubscriptionKey = "c471224359ce494499635bc6a10ffd58";
-    private readonly string Region = "eastus";
+    private string SubscriptionKey = "c471224359ce494499635bc6a10ffd58";
+    private string Region = "eastus";
 
     private const string SpeechVoice = "en-IN-RaviNeural";
         // "en-US-ZiraNeural"; 7/10
