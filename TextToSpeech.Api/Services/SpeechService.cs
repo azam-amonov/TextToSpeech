@@ -5,7 +5,7 @@ namespace TextToSpeech.Api.Services;
 
 public class SpeechService: ISpeechService
 {
-    private string SubscriptionKey = "c471224359ce494499635bc6a10ffd58";
+    private string SubscriptionKey = "YOUR_KEY_HERE";
     private string Region = "eastus";
 
     private const string SpeechVoice = "en-IN-RaviNeural";
@@ -15,6 +15,7 @@ public class SpeechService: ISpeechService
         // "en-IN-NeerjaNeural"; 4/10 for joke
         //"en-US-AriaNeural"; 8/10
         //"en-AU-TinaNeural"; 7/10
+        
     private static string DesktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
     private readonly IWebHostEnvironment webHostEnvironment;
